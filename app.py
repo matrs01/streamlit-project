@@ -24,6 +24,10 @@ def load_data():
 with st.spinner('Loading data...'):
     data = load_data()
 
+# Removing the 'ID_CLIENT' and 'ID_LOAN' columns which are identifiers
+df_reduced = data.drop(
+    columns=['ID_CLIENT', 'ID_LOAN', 'AGREEMENT_RK'])
+
 if st.checkbox('Show raw data'):
     st.subheader('Raw data')
     st.write(data)
@@ -49,5 +53,16 @@ if st.button("Select", key='cat_feature_distr'):
         st.pyplot(eda.categorical_feature_distribution(
             data, selected_cat_features))
 
+
 st.header('Feature correlation')
-st.pyplot(eda.correlation_map(data))
+with st.spinner('Plotting...'):
+    st.pyplot(eda.correlation_map(df_reduced))
+
+
+st.header('Target dependency on features')
+with st.spinner('Plotting...'):
+    st.pyplot(eda.target_dependency(df_reduced))
+
+
+st.header('Numerical Characteristics of DataFrame')
+st.write(df_reduced.describe())
