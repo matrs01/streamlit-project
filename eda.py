@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from scipy import stats
 import seaborn as sns
 import numpy as np
 
@@ -25,6 +26,7 @@ def numerical_feature_distribution(processed_df, features=['All']):
         'TARGET': {'bin_step': 'auto', 'kde': False},
         'FST_PAYMENT': {'bin_step': 800, 'kde': True},
     }
+
 
     if 'All' in features:
         features = list(columns_plot_info.keys())
@@ -70,7 +72,7 @@ def categorical_feature_distribution(processed_df, features=['All']):
 
     for i in range(len(features)):
         ax = plt.subplot(nrows, ncols, i + 1)
-        sns.countplot(x='EDUCATION', data=processed_df, ax=ax)
+        sns.countplot(x=features[i], data=processed_df, ax=ax)
         plt.title(f'Distribution of {features[i]}')
         adjust_label_positions_for_horizontal(ax)
         plt.xlabel('')
