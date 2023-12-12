@@ -81,14 +81,10 @@ def categorical_feature_distribution(processed_df, features=['All']):
 
 
 def correlation_map(processed_df):
-    # Removing the 'ID_CLIENT' and 'ID_LOAN' columns which are identifiers
-    df_reduced = processed_df.drop(
-        columns=['ID_CLIENT', 'ID_LOAN', 'AGREEMENT_RK'])
-
     # Selecting numerical columns again for the correlation matrix
-    numerical_cols_reduced = df_reduced.select_dtypes(
+    numerical_cols_reduced = processed_df.select_dtypes(
         include=['float64', 'int64']).columns
-    correlation_matrix_reduced = df_reduced[numerical_cols_reduced].corr()
+    correlation_matrix_reduced = processed_df[numerical_cols_reduced].corr()
 
     # Plotting the final correlation matrix with adjusted label alignment
     fig = plt.figure(figsize=(17, 15))
@@ -98,5 +94,23 @@ def correlation_map(processed_df):
     # Adjusting the x-axis labels
     plt.xticks(rotation=45, ha='right')
     plt.title("Final Correlation Matrix with Adjusted Labels")
+
+    return fig
+
+
+def target_dependency(processed_df):
+    fig, axes = plt.subplots(nrows=3, ncols=3, figsize=(17, 17))
+    fig.subplots_adjust(hspace=1.5)
+
+    boxplot_cols = ['PERSONAL_INCOME', 'CREDIT', 'AGE', 'CHILD_TOTAL',
+                    'DEPENDANTS', 'TERM', 'LOAN_NUM_TOTAL', 'LOAN_NUM_CLOSED', 'FST_PAYMENT']
+
+    for i, col in enumerate(boxplot_cols):
+        ax = axes[i // 3, i % 3]
+
+        sns.boxplot(x=col, y="TARGET", data=processed_df.astype(
+            {'TARGET': 'str'}), ax=ax)
+
+    plt.tight_layout()
 
     return fig
